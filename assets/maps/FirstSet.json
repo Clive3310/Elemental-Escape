@@ -1,0 +1,14 @@
+{ "columns":41,
+ "image":"FirstSet.png",
+ "imageheight":1504,
+ "imagewidth":1312,
+ "margin":0,
+ "name":"FirstSet",
+ "spacing":0,
+ "tilecount":1927,
+ "tiledversion":"1.11.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}

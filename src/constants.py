@@ -1,7 +1,9 @@
 import arcade.gui
+import arcade
 
-WINDOW_BASE_COLOR = arcade.color.BRONZE_YELLOW
-WINDOW_SIZE = (1000, 700)
+
+WINDOW_MENU_COLOR = arcade.color.BRONZE_YELLOW
+WINDOW_SIZE = (515.2, 716)
 font_size_button = int(WINDOW_SIZE[0] // 27.77)
 font_name_button = "georgia"
 BUTTON_STYLE = {
@@ -36,3 +38,5 @@ TITLE_STYLE = {
     "font_name": ("georgia",),
     "bold": True
 }
+
+TILE_SCALING = 0.7

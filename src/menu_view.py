@@ -2,6 +2,7 @@ from src.constants import *
 import arcade.gui
 from pyglet.graphics import Batch
 
+
 MAX_BUTTON_SIZE = (400, 300)
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2 if WINDOW_SIZE[0] // 2 <= MAX_BUTTON_SIZE[0] else MAX_BUTTON_SIZE[0]
 BUTTON_HEIGHT = WINDOW_SIZE[1] // 7 if WINDOW_SIZE[1] // 7 <= MAX_BUTTON_SIZE[1] else MAX_BUTTON_SIZE[1]
@@ -12,7 +13,7 @@ Y_OFFSET_CENTER = BUTTON_HEIGHT + BUTTON_MARGIN
 class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
-        self.background_color = WINDOW_BASE_COLOR
+        self.background_color = WINDOW_MENU_COLOR
         self.window.size = WINDOW_SIZE
         self.setup()
 
@@ -55,7 +56,9 @@ class MenuView(arcade.View):
         self.title_drop_batch.draw()
 
     def play(self, _a):
-        pass
+        from src.lv_choose_view import ChooseView
+        view = ChooseView()
+        self.window.show_view(view)
 
     def settings(self, _a):
         pass

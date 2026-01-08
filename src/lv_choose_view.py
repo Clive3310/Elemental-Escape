@@ -1,7 +1,6 @@
 from src.constants import *
 import arcade.gui
 
-
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2.5
 BUTTON_HEIGHT = WINDOW_SIZE[1] // 5
 BUTTON_MARGIN_X = WINDOW_SIZE[0] // 9
@@ -30,12 +29,14 @@ class ChooseView(arcade.View):
             lv_button_right = arcade.gui.UIFlatButton(x=x_right, y=y, width=BUTTON_WIDTH, height=BUTTON_HEIGHT,
                                                       text=f"Level {i + 3} ★★★",
                                                       style=BUTTON_STYLE)
+            lv_button_left.on_click = lambda _a, ind=i: self.load_level_view(_a, ind=ind)
+            lv_button_right.on_click = lambda _a, ind=i + 3: self.load_level_view(_a, ind=ind)
             self.UIman.add(lv_button_left)
             self.UIman.add(lv_button_right)
 
         back_button = arcade.gui.UIFlatButton(x=WINDOW_SIZE[0] // 2 - BUTTON_WIDTH, y=BUTTON_HEIGHT // 4,
-                                                   width=BUTTON_WIDTH * 2, height=BUTTON_HEIGHT // 2, text="<------",
-                                                   style=BUTTON_STYLE)
+                                              width=BUTTON_WIDTH * 2, height=BUTTON_HEIGHT // 2, text="<------",
+                                              style=BUTTON_STYLE)
         back_button.on_click = self.return_to_menu
         self.UIman.add(back_button)
 
@@ -52,6 +53,11 @@ class ChooseView(arcade.View):
     def return_to_menu(self, _a):
         from src.menu_view import MenuView
         view = MenuView()
+        self.window.show_view(view)
+
+    def load_level_view(self, _a, ind: int = 1):
+        from src.level_view import LevelView
+        view = LevelView(ind)
         self.window.show_view(view)
 
 

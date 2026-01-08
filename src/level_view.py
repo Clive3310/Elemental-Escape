@@ -25,12 +25,15 @@ class LevelView(arcade.View):
             }
         }
 
+        base_path = "/".join(__file__.split("\\")[:-2] + ['assets', 'maps'])
         try:
-            self.tile_map = arcade.load_tilemap(f"../assets/maps/Level{self.ind}.json", scaling=TILE_SCALING,
+            path = base_path + f"/Level{self.ind}.json"
+            self.tile_map = arcade.load_tilemap(path, scaling=TILE_SCALING,
                                                 layer_options=layer_options)
         except FileNotFoundError:
             print(f"Error: {self.ind}-Level not found")
-            self.tile_map = arcade.load_tilemap(f"../assets/maps/BaseLevel.json", scaling=TILE_SCALING,
+            path = base_path + f"/BaseLevel.json"
+            self.tile_map = arcade.load_tilemap(path, scaling=TILE_SCALING,
                                                 layer_options=layer_options)
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -41,10 +44,15 @@ class LevelView(arcade.View):
     def on_draw(self):
         self.clear()
         self.scene.draw()
-        self.wallsList.draw_hit_boxes((100, 0, 0), 5)
 
     def on_update(self, delta_time: float):
         pass
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.ESCAPE and DEV:
+            from src.lv_choose_view import ChooseView
+            view = ChooseView()
+            self.window.show_view(view)
 
 
 if __name__ == "__main__":

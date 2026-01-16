@@ -1,7 +1,6 @@
 import arcade.gui
 import arcade
 
-
 DEV = True
 WINDOW_MENU_COLOR = arcade.color.BRONZE_YELLOW
 WINDOW_SIZE = (515.2, 716)
@@ -39,5 +38,9 @@ TITLE_STYLE = {
     "font_name": ("georgia",),
     "bold": True
 }
-
 TILE_SCALING = 0.7
+PLAYER_SCALING = 0.04
+PLAYER_SPEED = 2
+PLAYER_JUMP_POWER = 7
+GRAVITY = 0.5
+FRICTION = 0.8

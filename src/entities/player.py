@@ -1,4 +1,5 @@
 from src.constants import *
+import pathlib
 
 
 class Player(arcade.Sprite):
@@ -10,11 +11,11 @@ class Player(arcade.Sprite):
         self.setup()
 
     def setup(self):
-        base_path = "/".join(__file__.split("\\")[:-3] + ['assets', 'imgs'])
+        base_path = pathlib.Path(__file__).absolute().parent.parent.parent / "assets" / "imgs"
         if self.is_fire:
-            path = base_path + "/Fireboy-0.png"
+            path = base_path / "Fireboy-0.png"
         else:
-            path = base_path + "/Watergirl-0.png"
+            path = base_path / "Watergirl-0.png"
         self.texture = arcade.load_texture(path)
 
         self.moving = False

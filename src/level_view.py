@@ -2,6 +2,7 @@ from src.constants import *
 from src.entities.player import Player
 import arcade
 import json
+import pathlib
 
 
 class LevelView(arcade.View):
@@ -13,8 +14,10 @@ class LevelView(arcade.View):
         self.tile_map = None
         self.scene = None
         self.background_color = arcade.color.BLACK
-        path = "/".join(__file__.split("\\")[:-1]) + "/settings.json"
-        self.rule_set = json.load(open(path, "r"))
+        self.base_dir = pathlib.Path(__file__).absolute().parent
+        path = self.base_dir / "settings.json"
+        with path.open() as f:
+            self.rule_set = json.load(f)
 
         self.setup()
 
@@ -31,14 +34,14 @@ class LevelView(arcade.View):
             }
         }
 
-        base_path = "/".join(__file__.split("\\")[:-2] + ['assets', 'maps'])
+        base_path = self.base_dir.parent / "assets" / "maps"
         try:
-            path = base_path + f"/Level{self.ind}.json"
+            path = base_path / f"Level{self.ind}.json"
             self.tile_map = arcade.load_tilemap(path, scaling=TILE_SCALING,
                                                 layer_options=layer_options)
         except FileNotFoundError:
             print(f"Error: {self.ind}-Level not found")
-            path = base_path + f"/BaseLevel.json"
+            path = base_path / f"BaseLevel.json"
             self.tile_map = arcade.load_tilemap(path, scaling=TILE_SCALING,
                                                 layer_options=layer_options)
 

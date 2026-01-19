@@ -1,5 +1,7 @@
 from src.constants import *
 from src.entities.player import Player
+from src.entities.button import Button
+from src.entities.door import Door
 import arcade
 import json
 import pathlib
@@ -47,9 +49,27 @@ class LevelView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
+        # Стены - фон
         self.wallsList = self.scene.get_sprite_list("Walls")
         self.bgList = self.scene.get_sprite_list("Background")
 
+        # Двери
+        self.doors_ids = dict()
+        self.doors = arcade.SpriteList()
+        for obj in self.tile_map.object_lists["DoorsData"]:
+            door = Door(obj.shape, obj.properties["color"])
+            self.doors_ids[obj.properties["id"]] = door
+            self.doors.append(door)
+        self.scene.add_sprite_list("Doors", sprite_list=self.doors)
+
+        # Кнопки
+        self.buttons = arcade.SpriteList()
+        for obj in self.tile_map.object_lists["ButtonsData"]:
+            button = Button(obj.shape, obj.properties["id"], obj.properties["color"])
+            self.buttons.append(button)
+        self.scene.add_sprite_list("Buttons", sprite_list=self.buttons)
+
+        # Игроки
         self.fire_spawn_pos = self.scene.get_sprite_list("FireSpawn").pop().position
         self.water_spawn_pos = self.scene.get_sprite_list("WaterSpawn").pop().position
 
@@ -58,6 +78,8 @@ class LevelView(arcade.View):
 
         self.scene.add_sprite("Fire", self.player_fire)
         self.scene.add_sprite("Water", self.player_water)
+
+        self.wallsList.extend(self.doors)
 
         self.phisics_fire = arcade.PhysicsEnginePlatformer(self.player_fire, platforms=self.wallsList,
                                                            gravity_constant=GRAVITY, walls=self.wallsList)
@@ -71,8 +93,31 @@ class LevelView(arcade.View):
     def on_update(self, delta_time: float):
         self.player_fire.update()
         self.player_water.update()
+
+        self.button_func(delta_time)
+        self.doors.update()
+
         self.phisics_fire.update()
         self.phisics_water.update()
+
+    def button_func(self, delta_time: float):
+        used = set()
+        for but in self.player_fire.collides_with_list(self.buttons):
+            door_id = but.aid
+            try:
+                self.doors_ids[door_id].use(delta_time)
+                used.add(door_id)
+            except KeyError:
+                print(f"Error: door {door_id} wasn't found")
+
+        for but in self.player_water.collides_with_list(self.buttons):
+            door_id = but.aid
+            try:
+                if door_id in used:
+                    continue
+                self.doors_ids[door_id].use(delta_time)
+            except KeyError:
+                print(f"Error: door {door_id} wasn't found")
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == self.rule_set["Fire"]["LEFT"]:
@@ -96,8 +141,8 @@ class LevelView(arcade.View):
 
         if symbol == arcade.key.ESCAPE and DEV:
             from src.lv_choose_view import ChooseView
-            view = ChooseView()
-            self.window.show_view(view)
+            _view = ChooseView()
+            self.window.show_view(_view)
 
     def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == self.rule_set["Fire"]["LEFT"]:

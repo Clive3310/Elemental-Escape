@@ -22,7 +22,7 @@ class Player(arcade.Sprite):
         self.on_ground = True
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
-        super().update()
+        super().update(delta_time)
         if not self.moving:
             self.change_x *= FRICTION
         if self.change_y != 0:

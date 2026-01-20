@@ -2,7 +2,6 @@ from src.constants import *
 import arcade.gui
 from pyglet.graphics import Batch
 
-
 MAX_BUTTON_SIZE = (400, 300)
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2 if WINDOW_SIZE[0] // 2 <= MAX_BUTTON_SIZE[0] else MAX_BUTTON_SIZE[0]
 BUTTON_HEIGHT = WINDOW_SIZE[1] // 7 if WINDOW_SIZE[1] // 7 <= MAX_BUTTON_SIZE[1] else MAX_BUTTON_SIZE[1]
@@ -14,7 +13,8 @@ class MenuView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = WINDOW_MENU_COLOR
-        self.window.size = WINDOW_SIZE
+        if not self.window.fullscreen:
+            self.window.size = WINDOW_SIZE
         self.setup()
 
     def setup(self):
@@ -61,7 +61,9 @@ class MenuView(arcade.View):
         self.window.show_view(view)
 
     def settings(self, _a):
-        pass
+        from src.settings_view import SettingsView  # Импорт внутри, чтобы избежать круговой зависимости
+        view = SettingsView()
+        self.window.show_view(view)
 
     def exiting(self, _a):
         arcade.exit()

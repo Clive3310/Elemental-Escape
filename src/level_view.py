@@ -9,8 +9,8 @@ class LevelView(arcade.View):
     def __init__(self, ind: int = 1):
         super().__init__()
         self.ind = ind
-        self.window.size = WINDOW_SIZE
-
+        if not self.window.fullscreen:
+            self.window.size = WINDOW_SIZE
         self.tile_map = None
         self.scene = None
         self.background_color = arcade.color.BLACK

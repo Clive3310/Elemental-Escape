@@ -3,7 +3,7 @@ import arcade
 
 DEV = True
 WINDOW_MENU_COLOR = arcade.color.BRONZE_YELLOW
-WINDOW_SIZE = (515.2, 716)
+WINDOW_SIZE = (516, 716)
 font_size_button = int(WINDOW_SIZE[0] // 27.77)
 font_name_button = "georgia"
 BUTTON_STYLE = {

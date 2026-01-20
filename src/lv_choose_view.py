@@ -11,7 +11,8 @@ class ChooseView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = WINDOW_MENU_COLOR
-        self.window.size = WINDOW_SIZE
+        if not self.window.fullscreen:
+            self.window.size = WINDOW_SIZE
         self.setup()
 
     def setup(self):

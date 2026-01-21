@@ -1,14 +1,15 @@
 {
-  "Fire": {
-    "UP": 119,
-    "LEFT": 97,
-    "INTER": 115,
-    "RIGHT": 100
-  },
-  "Water": {
-    "UP": 65362,
-    "LEFT": 65361,
-    "INTER": 65364,
-    "RIGHT": 65363
-  }
+    "Fire": {
+        "UP": 119,
+        "LEFT": 97,
+        "INTER": 115,
+        "RIGHT": 100
+    },
+    "Water": {
+        "UP": 65362,
+        "LEFT": 65361,
+        "INTER": 65364,
+        "RIGHT": 65363
+    },
+    "fullscreen": false
 }

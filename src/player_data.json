@@ -1,0 +1,34 @@
+{
+  "Levels": {
+    "1": {
+      "Completed": false,
+      "Best_time": 10000.0,
+      "Stars": 0
+    },
+    "2": {
+      "Completed": false,
+      "Best_time": 10000.0,
+      "Stars": 0
+    },
+    "3": {
+      "Completed": false,
+      "Best_time": 10000.0,
+      "Stars": 0
+    },
+    "4": {
+      "Completed": false,
+      "Best_time": 10000.0,
+      "Stars": 0
+    },
+    "5": {
+      "Completed": false,
+      "Best_time": 10000.0,
+      "Stars": 0
+    },
+    "6": {
+      "Completed": false,
+      "Best_time": 10000.0,
+      "Stars": 0
+    }
+  }
+}

@@ -1,5 +1,6 @@
 from src.constants import *
 import arcade.gui
+from src.data_save_load import *
 
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2.5
 BUTTON_HEIGHT = WINDOW_SIZE[1] // 5
@@ -16,19 +17,24 @@ class ChooseView(arcade.View):
         self.setup()
 
     def setup(self):
+        self.levels_data = dict()
+        for i in range(1, 7):
+            self.levels_data[i] = load_level_data(i)
+
         self.UIman = arcade.gui.UIManager()
 
         x_left = WINDOW_SIZE[0] // 2 - BUTTON_WIDTH - BUTTON_MARGIN_X // 2
         x_right = WINDOW_SIZE[0] // 2 + BUTTON_MARGIN_X // 2
 
         for i in range(1, 4):
+            f_stars = ("★ " * self.levels_data[i]["Stars"] + "☆ " * (3 - self.levels_data[i]["Stars"])).strip()
+            s_stars = ("★ " * self.levels_data[i + 3]["Stars"] + "☆ " * (3 - self.levels_data[i + 3]["Stars"])).strip()
             y = WINDOW_SIZE[1] - (BUTTON_HEIGHT + BUTTON_MARGIN_Y) * i
-            # Звёзды заменить на заполненный в соответствии с сохранением "☆ - ★"
             lv_button_left = arcade.gui.UIFlatButton(x=x_left, y=y, width=BUTTON_WIDTH, height=BUTTON_HEIGHT,
-                                                     text=f"Level {i} ★☆☆",
+                                                     text=f"Level {i} {f_stars}",
                                                      style=BUTTON_STYLE)
             lv_button_right = arcade.gui.UIFlatButton(x=x_right, y=y, width=BUTTON_WIDTH, height=BUTTON_HEIGHT,
-                                                      text=f"Level {i + 3} ★★★",
+                                                      text=f"Level {i + 3} {s_stars}",
                                                       style=BUTTON_STYLE)
             lv_button_left.on_click = lambda _a, ind=i: self.load_level_view(_a, ind=ind)
             lv_button_right.on_click = lambda _a, ind=i + 3: self.load_level_view(_a, ind=ind)

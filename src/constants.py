@@ -48,3 +48,46 @@ BUTTON_SCALE = 0.05
 DOOR_SCALE = 0.15
 DOOR_MOVE_UP_SCALE = 1
 DOOR_SPEED = 30
+TIMER_FONT_SIZE = 30
+EXIT_SCALING = 1
+STANDARD_LEVEL_DATA = {
+    "Completed": False,
+    "Best_time": 0.0,
+    "Stars": 0
+}
+MAX_LEVEL_TIME = 15.0
+BASE_LEVEL_DATA = {
+    "Levels": {
+        "1": {
+            "Completed": False,
+            "Best_time": 10000.0,
+            "Stars": 0
+        },
+        "2": {
+            "Completed": False,
+            "Best_time": 10000.0,
+            "Stars": 0
+        },
+        "3": {
+            "Completed": False,
+            "Best_time": 10000.0,
+            "Stars": 0
+        },
+        "4": {
+            "Completed": False,
+            "Best_time": 10000.0,
+            "Stars": 0
+        },
+        "5": {
+            "Completed": False,
+            "Best_time": 10000.0,
+            "Stars": 0
+        },
+        "6": {
+            "Completed": False,
+            "Best_time": 10000.0,
+            "Stars": 0
+        }
+    }
+}
+LEVEL_COUNT = 6

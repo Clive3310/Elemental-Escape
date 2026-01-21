@@ -1,7 +1,10 @@
 from src.constants import *
+from src.data_save_load import *
 from src.entities.player import Player
 from src.entities.button import Button
 from src.entities.door import Door
+from src.entities.exit import Exit
+from pyglet.graphics import Batch
 import arcade
 import json
 import pathlib
@@ -24,6 +27,8 @@ class LevelView(arcade.View):
         self.setup()
 
     def setup(self):
+        self.player_data = load_level_data(self.ind)
+
         layer_options = {
             "Background": {
                 "use_spatial_hash": True
@@ -75,9 +80,10 @@ class LevelView(arcade.View):
 
         self.player_fire = Player(self.fire_spawn_pos, True)
         self.player_water = Player(self.water_spawn_pos, False)
+        self.players = arcade.SpriteList()
+        self.players.extend((self.player_fire, self.player_water))
 
-        self.scene.add_sprite("Fire", self.player_fire)
-        self.scene.add_sprite("Water", self.player_water)
+        self.scene.add_sprite_list("Players", sprite_list=self.players)
 
         self.wallsList.extend(self.doors)
 
@@ -86,19 +92,67 @@ class LevelView(arcade.View):
         self.phisics_water = arcade.PhysicsEnginePlatformer(self.player_water, platforms=self.wallsList,
                                                             gravity_constant=GRAVITY, walls=self.wallsList)
 
+        self.time = 0.0
+        self.time_batch = Batch()
+
+        self.deaths = 0
+
+        # Выходы
+        self.exits = arcade.SpriteList()
+        self.exit_fire = None
+        self.exit_water = None
+        for obj in self.tile_map.object_lists["Exits"]:
+            if obj.properties["fire"]:
+                self.exit_fire = Exit(obj.shape, obj.properties["fire"])
+            else:
+                self.exit_water = Exit(obj.shape, obj.properties["fire"])
+        self.exits.extend((self.exit_fire, self.exit_water))
+        self.scene.add_sprite_list_before("Exits", sprite_list=self.exits, before="Players")
+
     def on_draw(self):
         self.clear()
         self.scene.draw()
 
+        self.time_text = arcade.Text(f"{round(self.time, 2)}", WINDOW_SIZE[0] // 2 - TIMER_FONT_SIZE,
+                                     WINDOW_SIZE[1] - TIMER_FONT_SIZE,
+                                     color=arcade.color.BLACK, font_size=TIMER_FONT_SIZE, batch=self.time_batch)
+        self.time_batch.draw()
+
     def on_update(self, delta_time: float):
-        self.player_fire.update()
-        self.player_water.update()
+        self.players.update()
 
         self.button_func(delta_time)
         self.doors.update()
 
         self.phisics_fire.update()
         self.phisics_water.update()
+
+        self.time += delta_time
+
+        self.end_check()
+
+    def ending(self):
+        save_level_data(self.ind, "Completed", True)
+
+        new_record = False
+        if round(self.time, 2) < self.player_data["Best_time"]:
+            new_record = True
+            save_level_data(self.ind, "Best_time", round(self.time, 2))
+
+        star_count = 1
+        star_count += 1 if self.time < MAX_LEVEL_TIME else 0
+        star_count += 1 if not self.deaths else 0
+        if star_count > self.player_data["Stars"]:
+            save_level_data(self.ind, "Stars", star_count)
+
+        from src.ending_view import EndingView
+        view = EndingView(self.ind, round(self.time, 2), self.deaths, new_record)
+        self.window.show_view(view)
+
+    def end_check(self):
+        if (self.player_fire.collides_with_sprite(self.exit_fire) and
+                self.player_water.collides_with_sprite(self.exit_water)):
+            self.ending()
 
     def button_func(self, delta_time: float):
         used = set()
@@ -143,6 +197,9 @@ class LevelView(arcade.View):
             from src.lv_choose_view import ChooseView
             _view = ChooseView()
             self.window.show_view(_view)
+
+        if symbol == arcade.key.R:
+            self.setup()
 
     def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == self.rule_set["Fire"]["LEFT"]:

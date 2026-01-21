@@ -65,8 +65,6 @@ class MenuView(arcade.View):
     def on_draw(self):
         self.clear()
 
-        self.title_text.x = self.window.width / 2
-        self.title_text.y = self.window.height / 2 + WINDOW_SIZE[1] // 4
         self.title_batch.draw()
 
         self.ui_manager.draw()

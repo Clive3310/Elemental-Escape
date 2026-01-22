@@ -47,12 +47,12 @@ FRICTION = 0.8
 BUTTON_SCALE = 0.05
 DOOR_SCALE = 0.15
 DOOR_MOVE_UP_SCALE = 1
-DOOR_SPEED = 30
+DOOR_SPEED = 60
 TIMER_FONT_SIZE = 30
 EXIT_SCALING = 1
 STANDARD_LEVEL_DATA = {
     "Completed": False,
-    "Best_time": 0.0,
+    "Best_time": 10000.0,
     "Stars": 0
 }
 MAX_LEVEL_TIME = 15.0

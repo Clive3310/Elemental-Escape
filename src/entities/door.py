@@ -3,11 +3,12 @@ import pathlib
 
 
 class Door(arcade.Sprite):
-    def __init__(self, position, color_id: int):  # 0 - yellow, 1 - red, base - yellow
+    def __init__(self, position, color_id: int, rev: bool=False):  # 0 - yellow, 1 - red, base - yellow
         super().__init__()
         self.position = position
         self.scale = DOOR_SCALE
         self.color_id = color_id
+        self.rev = rev
 
         self.setup()
 
@@ -21,14 +22,26 @@ class Door(arcade.Sprite):
             case _:
                 self.texture = arcade.load_texture(base_path / "door-yellow.png")
 
-        self.max_up = self.top + DOOR_MOVE_UP_SCALE * self.height
-        self.leat_down = self.bottom
+        if self.rev:
+            self.max_down = self.bottom - DOOR_MOVE_UP_SCALE * self.height
+            self.least_up = self.top
+        else:
+            self.max_up = self.top + DOOR_MOVE_UP_SCALE * self.height
+            self.least_down = self.bottom
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         super().update()
-        if self.bottom > self.leat_down:
-            self.center_y -= DOOR_SPEED * delta_time
+        if self.rev:
+            if self.top < self.least_up:
+                self.center_y += DOOR_SPEED * delta_time
+        else:
+            if self.bottom > self.least_down:
+                self.center_y -= DOOR_SPEED * delta_time
 
     def use(self, delta_time: float = 1 / 60):
-        if self.top < self.max_up:
-            self.center_y += DOOR_SPEED * delta_time * 2
+        if self.rev:
+            if self.bottom > self.max_down:
+                self.center_y -= DOOR_SPEED * delta_time * 2
+        else:
+            if self.bottom < self.max_up:
+                self.center_y += DOOR_SPEED * delta_time * 2

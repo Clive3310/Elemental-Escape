@@ -1,4 +1,3 @@
-from src.constants import *
 from src.data_save_load import *
 from src.entities.player import Player
 from src.entities.button import Button
@@ -38,12 +37,18 @@ class LevelView(arcade.View):
             },
             "Exit": {
                 "use_spatial_hash": True
+            },
+            "Fire": {
+                "use_spatial_hash": True
+            },
+            "Water": {
+                "use_spatial_hash": True
             }
         }
 
         base_path = self.base_dir.parent / "assets" / "maps"
         try:
-            path = base_path / f"Level{self.ind}.json"
+            path = base_path / f"Level-{self.ind}.json"
             self.tile_map = arcade.load_tilemap(path, scaling=TILE_SCALING,
                                                 layer_options=layer_options)
         except FileNotFoundError:
@@ -58,20 +63,26 @@ class LevelView(arcade.View):
         self.wallsList = self.scene.get_sprite_list("Walls")
         self.bgList = self.scene.get_sprite_list("Background")
 
+        # Огонь + вода
+        self.waterList = self.scene.get_sprite_list("Water")
+        self.fireList = self.scene.get_sprite_list("Fire")
+
         # Двери
         self.doors_ids = dict()
         self.doors = arcade.SpriteList()
-        for obj in self.tile_map.object_lists["DoorsData"]:
-            door = Door(obj.shape, obj.properties["color"])
-            self.doors_ids[obj.properties["id"]] = door
-            self.doors.append(door)
+        if "DoorsData" in self.tile_map.object_lists.keys():
+            for obj in self.tile_map.object_lists["DoorsData"]:
+                door = Door(obj.shape, obj.properties["color"], obj.properties["reversed"])
+                self.doors_ids[obj.properties["id"]] = door
+                self.doors.append(door)
         self.scene.add_sprite_list("Doors", sprite_list=self.doors)
 
         # Кнопки
         self.buttons = arcade.SpriteList()
-        for obj in self.tile_map.object_lists["ButtonsData"]:
-            button = Button(obj.shape, obj.properties["id"], obj.properties["color"])
-            self.buttons.append(button)
+        if "ButtonsData" in self.tile_map.object_lists.keys():
+            for obj in self.tile_map.object_lists["ButtonsData"]:
+                button = Button(obj.shape, obj.properties["id"], obj.properties["color"])
+                self.buttons.append(button)
         self.scene.add_sprite_list("Buttons", sprite_list=self.buttons)
 
         # Игроки
@@ -127,9 +138,28 @@ class LevelView(arcade.View):
         self.phisics_fire.update()
         self.phisics_water.update()
 
+        deadge = self.death_check()
+        if deadge:
+            self.restart()
+
         self.time += delta_time
 
         self.end_check()
+
+    def restart(self):
+        self.player_fire.position = self.fire_spawn_pos
+        self.player_fire.change_x, self.player_fire.change_y = 0, 0
+
+        self.player_water.position = self.water_spawn_pos
+        self.player_water.change_x, self.player_water.change_y = 0, 0
+
+    def death_check(self):
+        if self.player_fire.collides_with_list(self.waterList):
+            return True
+
+        if self.player_water.collides_with_list(self.fireList):
+            return True
+        return False
 
     def ending(self):
         save_level_data(self.ind, "Completed", True)
@@ -215,6 +245,6 @@ class LevelView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window()
-    view = LevelView()
+    view = LevelView(ind=1)
     window.show_view(view)
     arcade.run()

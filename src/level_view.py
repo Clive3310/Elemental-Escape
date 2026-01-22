@@ -63,9 +63,10 @@ class LevelView(arcade.View):
         self.wallsList = self.scene.get_sprite_list("Walls")
         self.bgList = self.scene.get_sprite_list("Background")
 
-        # Огонь + вода
+        # Огонь + вода + кислота
         self.waterList = self.scene.get_sprite_list("Water")
         self.fireList = self.scene.get_sprite_list("Fire")
+        self.acidList = self.scene.get_sprite_list("Acid")
 
         # Двери
         self.doors_ids = dict()
@@ -84,6 +85,12 @@ class LevelView(arcade.View):
                 button = Button(obj.shape, obj.properties["id"], obj.properties["color"])
                 self.buttons.append(button)
         self.scene.add_sprite_list("Buttons", sprite_list=self.buttons)
+
+        # Форсы
+        try:
+            self.forceList = self.scene.get_sprite_list("ForceUp")
+        except KeyError:
+            self.forceList = arcade.SpriteList()
 
         # Игроки
         self.fire_spawn_pos = self.scene.get_sprite_list("FireSpawn").pop().position
@@ -134,6 +141,7 @@ class LevelView(arcade.View):
 
         self.button_func(delta_time)
         self.doors.update()
+        self.force_check(delta_time)
 
         self.phisics_fire.update()
         self.phisics_water.update()
@@ -145,6 +153,13 @@ class LevelView(arcade.View):
         self.time += delta_time
 
         self.end_check()
+
+    def force_check(self, delta_time: float):
+        if self.player_fire.collides_with_list(self.forceList):
+            self.player_fire.change_y += FORCE_POWER * delta_time
+
+        if self.player_water.collides_with_list(self.forceList):
+            self.player_water.change_y += FORCE_POWER * delta_time
 
     def restart(self):
         self.player_fire.position = self.fire_spawn_pos
@@ -159,6 +174,10 @@ class LevelView(arcade.View):
 
         if self.player_water.collides_with_list(self.fireList):
             return True
+
+        if self.player_fire.collides_with_list(self.acidList) or self.player_water.collides_with_list(self.acidList):
+            return True
+
         return False
 
     def ending(self):
@@ -245,6 +264,6 @@ class LevelView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window()
-    view = LevelView(ind=1)
+    view = LevelView(ind=2)
     window.show_view(view)
     arcade.run()

@@ -281,6 +281,6 @@ class LevelView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window()
-    view = LevelView(ind=4)
+    view = LevelView(ind=5)
     window.show_view(view)
     arcade.run()

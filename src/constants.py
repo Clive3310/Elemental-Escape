@@ -1,7 +1,7 @@
 import arcade.gui
 import arcade
 
-DEV = True
+DEV = False
 WINDOW_MENU_COLOR = arcade.color.BRONZE_YELLOW
 WINDOW_SIZE = (516, 716)
 font_size_button = int(WINDOW_SIZE[0] // 27.77)

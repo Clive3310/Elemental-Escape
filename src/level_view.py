@@ -1,12 +1,14 @@
+import json
+import pathlib
+
+import arcade
+from pyglet.graphics import Batch
+
 from src.data_save_load import *
-from src.entities.player import Player
 from src.entities.button import Button
 from src.entities.door import Door
 from src.entities.exit import Exit
-from pyglet.graphics import Batch
-import arcade
-import json
-import pathlib
+from src.entities.player import Player
 
 
 class LevelView(arcade.View):

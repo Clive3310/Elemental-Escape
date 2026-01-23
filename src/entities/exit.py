@@ -1,5 +1,6 @@
-from src.constants import *
 import pathlib
+
+from src.constants import *
 
 
 class Exit(arcade.Sprite):

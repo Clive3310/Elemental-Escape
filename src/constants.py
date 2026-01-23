@@ -1,5 +1,5 @@
-import arcade.gui
 import arcade
+import arcade.gui
 
 DEV = True
 WINDOW_MENU_COLOR = arcade.color.BRONZE_YELLOW

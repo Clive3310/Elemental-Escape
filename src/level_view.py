@@ -99,6 +99,7 @@ class LevelView(arcade.View):
             for obj in self.tile_map.object_lists["ButtonsData"]:
                 button = Button(obj.shape, obj.properties["id"], obj.properties["color"])
                 self.buttons.append(button)
+        self.buttons.enable_spatial_hashing()
         self.scene.add_sprite_list("Buttons", sprite_list=self.buttons)
 
         # Форсы
@@ -145,17 +146,14 @@ class LevelView(arcade.View):
     def on_draw(self):
         self.clear()
         self.scene.draw()
-
-        self.time_text = arcade.Text(f"{round(self.time, 2)}", WINDOW_SIZE[0] // 2 - TIMER_FONT_SIZE,
-                                     WINDOW_SIZE[1] - TIMER_FONT_SIZE,
-                                     color=arcade.color.BLACK, font_size=TIMER_FONT_SIZE, batch=self.time_batch)
-        self.time_batch.draw()
+        self.time_text.text = f"{round(self.time, 2)}"  # Только обновляем текст
+        self.time_text.draw()
 
     def on_update(self, delta_time: float):
         self.players.update()
 
         self.button_func(delta_time)
-        self.doors.update()
+        self.doors.update(delta_time)
         self.force_check(delta_time)
 
         self.phisics_fire.update()
@@ -225,6 +223,7 @@ class LevelView(arcade.View):
             self.ending()
 
     def button_func(self, delta_time: float):
+        used = set()
         for but in self.player_fire.collides_with_list(self.buttons):
             door_id = but.aid
             try:
@@ -283,6 +282,6 @@ class LevelView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window()
-    view = LevelView(ind=5)
+    view = LevelView(ind=1)
     window.show_view(view)
     arcade.run()

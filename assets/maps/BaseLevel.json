@@ -280,6 +280,11 @@
                          "name":"id",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"reversed",
+                         "type":"bool",
+                         "value":false
                         }],
                  "rotation":0,
                  "type":"",

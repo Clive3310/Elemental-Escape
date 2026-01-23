@@ -64,9 +64,18 @@ class LevelView(arcade.View):
         self.bgList = self.scene.get_sprite_list("Background")
 
         # Огонь + вода + кислота
-        self.waterList = self.scene.get_sprite_list("Water")
-        self.fireList = self.scene.get_sprite_list("Fire")
-        self.acidList = self.scene.get_sprite_list("Acid")
+        try:
+            self.waterList = self.scene.get_sprite_list("Water")
+        except KeyError:
+            self.waterList = arcade.SpriteList()
+        try:
+            self.fireList = self.scene.get_sprite_list("Fire")
+        except KeyError:
+            self.fireList = arcade.SpriteList()
+        try:
+            self.acidList = self.scene.get_sprite_list("Acid")
+        except KeyError:
+            self.acidList = arcade.SpriteList()
 
         # Двери
         self.doors_ids = dict()
@@ -74,7 +83,11 @@ class LevelView(arcade.View):
         if "DoorsData" in self.tile_map.object_lists.keys():
             for obj in self.tile_map.object_lists["DoorsData"]:
                 door = Door(obj.shape, obj.properties["color"], obj.properties["reversed"])
-                self.doors_ids[obj.properties["id"]] = door
+                _id = obj.properties["id"]
+                if _id in self.doors_ids.keys():
+                    self.doors_ids[_id].append(door)
+                else:
+                    self.doors_ids[_id] = [door]
                 self.doors.append(door)
         self.scene.add_sprite_list("Doors", sprite_list=self.doors)
 
@@ -169,6 +182,12 @@ class LevelView(arcade.View):
         self.player_water.change_x, self.player_water.change_y = 0, 0
 
     def death_check(self):
+        if DEV:
+            if (self.player_fire.collides_with_list(self.waterList) or self.player_water.collides_with_list(
+                    self.fireList) or self.player_fire.collides_with_list(self.acidList)
+                    or self.player_water.collides_with_list(self.acidList)):
+                print("Deadge!")
+                return False
         if self.player_fire.collides_with_list(self.waterList):
             return True
 
@@ -204,21 +223,19 @@ class LevelView(arcade.View):
             self.ending()
 
     def button_func(self, delta_time: float):
-        used = set()
         for but in self.player_fire.collides_with_list(self.buttons):
             door_id = but.aid
             try:
-                self.doors_ids[door_id].use(delta_time)
-                used.add(door_id)
+                for door in self.doors_ids[door_id]:
+                    door.use(delta_time)
             except KeyError:
                 print(f"Error: door {door_id} wasn't found")
 
         for but in self.player_water.collides_with_list(self.buttons):
             door_id = but.aid
             try:
-                if door_id in used:
-                    continue
-                self.doors_ids[door_id].use(delta_time)
+                for door in self.doors_ids[door_id]:
+                    door.use(delta_time)
             except KeyError:
                 print(f"Error: door {door_id} wasn't found")
 
@@ -242,13 +259,13 @@ class LevelView(arcade.View):
         if symbol == self.rule_set["Water"]["UP"] and self.player_water.on_ground:
             self.player_water.change_y = PLAYER_JUMP_POWER
 
-        if symbol == arcade.key.ESCAPE and DEV:
+        if symbol == arcade.key.ESCAPE:
             from src.lv_choose_view import ChooseView
             _view = ChooseView()
             self.window.show_view(_view)
 
         if symbol == arcade.key.R:
-            self.setup()
+            self.restart()
 
     def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == self.rule_set["Fire"]["LEFT"]:
@@ -264,6 +281,6 @@ class LevelView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window()
-    view = LevelView(ind=2)
+    view = LevelView(ind=4)
     window.show_view(view)
     arcade.run()

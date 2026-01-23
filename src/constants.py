@@ -55,7 +55,7 @@ STANDARD_LEVEL_DATA = {
     "Best_time": 10000.0,
     "Stars": 0
 }
-MAX_LEVEL_TIME = 15.0
+MAX_LEVEL_TIME = 100.0
 BASE_LEVEL_DATA = {
     "Levels": {
         "1": {

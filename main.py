@@ -8,7 +8,7 @@ from src import menu_view
 
 def main():
     window = arcade.Window(title="Elemental Escape")
-
+    window.set_update_rate(1 / 60)
     settings_path = pathlib.Path(__file__).parent / "src" / "settings.json"
 
     try:

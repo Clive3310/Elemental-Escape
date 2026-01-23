@@ -9,7 +9,7 @@ from src import menu_view
 def main():
     window = arcade.Window(title="Elemental Escape")
 
-    settings_path = pathlib.Path(__file__).parent / "src" / "settings.json"
+    settings_path = pathlib.Path(__file__).parent / "settings.json"
 
     try:
         if settings_path.exists():

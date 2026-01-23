@@ -14,6 +14,7 @@ from src.entities.player import Player
 class LevelView(arcade.View):
     def __init__(self, ind: int = 1):
         super().__init__()
+        self.time_text = None
         self.ind = ind
         if not self.window.fullscreen:
             self.window.size = WINDOW_SIZE
@@ -47,6 +48,13 @@ class LevelView(arcade.View):
                 "use_spatial_hash": True
             }
         }
+        self.time_text = arcade.Text(
+            "0.0",
+            WINDOW_SIZE[0] // 2 - TIMER_FONT_SIZE,
+            WINDOW_SIZE[1] - TIMER_FONT_SIZE,
+            color=arcade.color.BLACK,
+            font_size=TIMER_FONT_SIZE
+        )
 
         base_path = self.base_dir.parent / "assets" / "maps"
         try:

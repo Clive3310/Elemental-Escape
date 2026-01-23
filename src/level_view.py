@@ -10,10 +10,10 @@ from src.entities.door import Door
 from src.entities.exit import Exit
 from src.entities.player import Player
 
-
 class LevelView(arcade.View):
     def __init__(self, ind: int = 1):
         super().__init__()
+        self.time_text = None
         self.ind = ind
         if not self.window.fullscreen:
             self.window.size = WINDOW_SIZE
@@ -47,7 +47,13 @@ class LevelView(arcade.View):
                 "use_spatial_hash": True
             }
         }
-
+        self.time_text = arcade.Text(
+            "0.0",
+            WINDOW_SIZE[0] // 2 - TIMER_FONT_SIZE,
+            WINDOW_SIZE[1] - TIMER_FONT_SIZE,
+            color=arcade.color.BLACK,
+            font_size=TIMER_FONT_SIZE
+        )
         base_path = self.base_dir.parent / "assets" / "maps"
         try:
             path = base_path / f"Level-{self.ind}.json"
@@ -67,8 +73,13 @@ class LevelView(arcade.View):
 
         # Огонь + вода + кислота
         self.waterList = self.scene.get_sprite_list("Water")
+        self.waterList.enable_spatial_hashing()  # Добавь это
+
         self.fireList = self.scene.get_sprite_list("Fire")
+        self.fireList.enable_spatial_hashing()
+
         self.acidList = self.scene.get_sprite_list("Acid")
+        self.acidList.enable_spatial_hashing()
 
         # Двери
         self.doors_ids = dict()
@@ -86,6 +97,7 @@ class LevelView(arcade.View):
             for obj in self.tile_map.object_lists["ButtonsData"]:
                 button = Button(obj.shape, obj.properties["id"], obj.properties["color"])
                 self.buttons.append(button)
+        self.buttons.enable_spatial_hashing()
         self.scene.add_sprite_list("Buttons", sprite_list=self.buttons)
 
         # Форсы
@@ -132,17 +144,14 @@ class LevelView(arcade.View):
     def on_draw(self):
         self.clear()
         self.scene.draw()
-
-        self.time_text = arcade.Text(f"{round(self.time, 2)}", WINDOW_SIZE[0] // 2 - TIMER_FONT_SIZE,
-                                     WINDOW_SIZE[1] - TIMER_FONT_SIZE,
-                                     color=arcade.color.BLACK, font_size=TIMER_FONT_SIZE, batch=self.time_batch)
-        self.time_batch.draw()
+        self.time_text.text = f"{round(self.time, 2)}"  # Только обновляем текст
+        self.time_text.draw()
 
     def on_update(self, delta_time: float):
         self.players.update()
 
         self.button_func(delta_time)
-        self.doors.update()
+        self.doors.update(delta_time)
         self.force_check(delta_time)
 
         self.phisics_fire.update()

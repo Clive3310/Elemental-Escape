@@ -10,7 +10,7 @@ class Door(arcade.Sprite):
         self.scale = DOOR_SCALE
         self.color_id = color_id
         self.rev = rev
-
+        self.is_pressed = False
         self.setup()
 
     def setup(self):
@@ -32,14 +32,17 @@ class Door(arcade.Sprite):
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         super().update()
-        if self.rev:
-            if self.top < self.least_up:
-                self.center_y += DOOR_SPEED * delta_time
-        else:
-            if self.bottom > self.least_down:
-                self.center_y -= DOOR_SPEED * delta_time
+        if not self.is_pressed:
+            if self.rev:
+                if self.top < self.least_up:
+                    self.center_y += DOOR_SPEED * delta_time
+            else:
+                if self.bottom > self.least_down:
+                    self.center_y -= DOOR_SPEED * delta_time
 
+        self.is_pressed = False
     def use(self, delta_time: float = 1 / 60):
+        self.is_pressed = True
         if self.rev:
             if self.bottom > self.max_down:
                 self.center_y -= DOOR_SPEED * delta_time * 2

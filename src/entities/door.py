@@ -1,9 +1,10 @@
-from src.constants import *
 import pathlib
+
+from src.constants import *
 
 
 class Door(arcade.Sprite):
-    def __init__(self, position, color_id: int, rev: bool=False):  # 0 - yellow, 1 - red, base - yellow
+    def __init__(self, position, color_id: int, rev: bool = False):  # 0 - yellow, 1 - red, base - yellow
         super().__init__()
         self.position = position
         self.scale = DOOR_SCALE

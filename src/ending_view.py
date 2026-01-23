@@ -1,6 +1,6 @@
 import arcade.color
 from pyglet.graphics import Batch
-from src.constants import *
+
 from src.data_save_load import *
 
 RECT_WIDTH = WINDOW_SIZE[0] // 1.4

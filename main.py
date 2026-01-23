@@ -1,6 +1,8 @@
-import arcade
 import json
 import pathlib
+
+import arcade
+
 from src import menu_view
 
 

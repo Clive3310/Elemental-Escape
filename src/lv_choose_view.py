@@ -1,11 +1,11 @@
-from src.constants import *
 import arcade.gui
+
 from src.data_save_load import *
 
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2.5
-BUTTON_HEIGHT = WINDOW_SIZE[1] // 7  # Было // 5, уменьшил для лучшей компоновки
+BUTTON_HEIGHT = WINDOW_SIZE[1] // 7
 BUTTON_MARGIN_X = WINDOW_SIZE[0] // 9
-BUTTON_MARGIN_Y = BUTTON_HEIGHT // 3  # Немного увеличил относительный отступ
+BUTTON_MARGIN_Y = BUTTON_HEIGHT // 3
 
 
 class ChooseView(arcade.View):
@@ -26,10 +26,7 @@ class ChooseView(arcade.View):
         self.UIman.enable()
         self.UIman.clear()
 
-        # Главный anchor layout
         anchor_layout = arcade.gui.UIAnchorLayout()
-
-        # Заголовок
         title_label = arcade.gui.UILabel(
             text="Choose Level",
             font_size=TITLE_STYLE["font_size"],
@@ -38,15 +35,11 @@ class ChooseView(arcade.View):
             bold=TITLE_STYLE["bold"]
         )
 
-        # Основной вертикальный box для уровней
         main_vbox = arcade.gui.UIBoxLayout(space_between=BUTTON_MARGIN_Y, vertical=True)
 
-        # Создаём 3 горизонтальных ряда по 2 кнопки
         for i in range(1, 4):
-            # Горизонтальный box для двух кнопок в ряду
             hbox = arcade.gui.UIBoxLayout(space_between=BUTTON_MARGIN_X, vertical=False)
 
-            # Левая кнопка (уровень i)
             f_stars = ("★ " * self.levels_data[i]["Stars"] + "☆ " * (3 - self.levels_data[i]["Stars"])).strip()
             lv_button_left = arcade.gui.UIFlatButton(
                 width=BUTTON_WIDTH,
@@ -57,7 +50,6 @@ class ChooseView(arcade.View):
             lv_button_left.on_click = lambda _a, ind=i: self.load_level_view(_a, ind=ind)
             hbox.add(lv_button_left)
 
-            # Правая кнопка (уровень i+3)
             s_stars = ("★ " * self.levels_data[i + 3]["Stars"] + "☆ " * (3 - self.levels_data[i + 3]["Stars"])).strip()
             lv_button_right = arcade.gui.UIFlatButton(
                 width=BUTTON_WIDTH,
@@ -70,16 +62,14 @@ class ChooseView(arcade.View):
 
             main_vbox.add(hbox)
 
-        # Кнопка "назад" снизу
         back_button = arcade.gui.UIFlatButton(
             width=BUTTON_WIDTH * 2 + BUTTON_MARGIN_X,
-            height=BUTTON_HEIGHT,  # Сделал такой же высоты как остальные кнопки
+            height=BUTTON_HEIGHT,
             text="<-- Back",
             style=BUTTON_STYLE
         )
         back_button.on_click = self.return_to_menu
 
-        # Добавляем всё в anchor layout с правильными отступами
         anchor_layout.add(child=title_label, anchor_x="center_x", anchor_y="top", align_y=-30)
         anchor_layout.add(child=main_vbox, anchor_x="center_x", anchor_y="center_y", align_y=20)  # Сдвинул вверх
         anchor_layout.add(child=back_button, anchor_x="center_x", anchor_y="bottom", align_y=30)

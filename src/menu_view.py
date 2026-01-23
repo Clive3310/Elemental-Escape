@@ -1,7 +1,8 @@
-from src.constants import *
 import arcade
 import arcade.gui
 from pyglet.graphics import Batch
+
+from src.constants import *
 
 MAX_BUTTON_SIZE = (400, 300)
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2 if WINDOW_SIZE[0] // 2 <= MAX_BUTTON_SIZE[0] else MAX_BUTTON_SIZE[0]

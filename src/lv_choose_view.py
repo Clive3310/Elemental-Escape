@@ -96,9 +96,6 @@ class ChooseView(arcade.View):
         view = LevelView(ind)
         self.window.show_view(view)
 
-
-if __name__ == "__main__":
-    window = arcade.Window()
-    view = ChooseView()
-    window.show_view(view)
-    arcade.run()
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.ESCAPE:
+            self.return_to_menu(None)

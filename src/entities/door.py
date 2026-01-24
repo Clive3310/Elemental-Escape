@@ -14,6 +14,7 @@ class Door(arcade.Sprite):
         self.setup()
 
     def setup(self):
+        self.activated = False
         base_path = pathlib.Path(__file__).absolute().parent.parent.parent / "assets" / "imgs"
         match self.color_id:
             case 0:
@@ -32,14 +33,16 @@ class Door(arcade.Sprite):
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         super().update()
-        if self.rev:
-            if self.top < self.least_up:
-                self.center_y += DOOR_SPEED * delta_time
-        else:
-            if self.bottom > self.least_down:
-                self.center_y -= DOOR_SPEED * delta_time
-
+        if not self.activated:
+            if self.rev:
+                if self.top < self.least_up:
+                    self.center_y += DOOR_SPEED * delta_time
+            else:
+                if self.bottom > self.least_down:
+                    self.center_y -= DOOR_SPEED * delta_time
+        self.activated = False
     def use(self, delta_time: float = 1 / 60):
+        self.activated = True
         if self.rev:
             if self.bottom > self.max_down:
                 self.center_y -= DOOR_SPEED * delta_time * 2

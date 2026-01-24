@@ -85,9 +85,13 @@ class SettingsView(arcade.View):
             self.window.width / 2,
             self.window.height / 2,
             anchor_x="center",
+            anchor_y="center",  # Добавили центровку по вертикали
             color=arcade.color.WHITE,
-            font_size=24,
-            bold=True
+            font_size=20,  # Чуть уменьшили шрифт (было 24)
+            bold=True,
+            multiline=True,  # Разрешаем перенос текста!
+            width=WINDOW_SIZE[0] - 60,  # Жестко ограничиваем ширину (размер маленького окна минус отступы)
+            align="center"  # Выравниваем текст по центру
         )
 
         anchor_layout = arcade.gui.UIAnchorLayout()
@@ -249,6 +253,9 @@ class SettingsView(arcade.View):
 
         self.title_text.x = self.window.width / 2
         self.title_text.y = self.window.height - 100
+
+        self.hint_text.x = self.window.width / 2
+        self.hint_text.y = self.window.height / 2
         self.save_settings()
 
     def on_click_back(self, event):

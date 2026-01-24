@@ -57,10 +57,10 @@ class EndingView(arcade.View):
                                      **new_text_style, batch=self.batch)
 
         # Deaths
-        self.deaths_text = arcade.Text(str(self.deaths), WINDOW_SIZE[0] // 2,
+        new_text_style['font_size'] = 25
+        self.deaths_text = arcade.Text(f"Deaths: {self.deaths}", WINDOW_SIZE[0] // 2,
                                        WINDOW_SIZE[1] // 3 - new_text_style["font_size"] * 0.5, anchor_x="center",
                                        **new_text_style, batch=self.batch)
-
         # Make ui
         self.ui_manager.enable()
         self.ui_manager.clear()

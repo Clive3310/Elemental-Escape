@@ -26,9 +26,9 @@
       "Stars": 0
     },
     "6": {
-      "Completed": false,
-      "Best_time": 10000.0,
-      "Stars": 0
+      "Completed": true,
+      "Best_time": 3.06,
+      "Stars": 3
     }
   }
 }

@@ -1,6 +1,7 @@
 import arcade.gui
 
 from src.data_save_load import *
+from src.sound_manager import sound_manager
 
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2.5
 BUTTON_HEIGHT = WINDOW_SIZE[1] // 7
@@ -87,11 +88,13 @@ class ChooseView(arcade.View):
         self.UIman.draw()
 
     def return_to_menu(self, _a):
+        sound_manager.play_ui_click()
         from src.menu_view import MenuView
         view = MenuView()
         self.window.show_view(view)
 
     def load_level_view(self, _a, ind: int = 1):
+        sound_manager.play_ui_click()
         from src.level_view import LevelView
         view = LevelView(ind)
         self.window.show_view(view)

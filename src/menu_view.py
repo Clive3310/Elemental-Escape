@@ -1,8 +1,8 @@
-import arcade
 import arcade.gui
 from pyglet.graphics import Batch
 
 from src.constants import *
+from src.sound_manager import sound_manager
 
 MAX_BUTTON_SIZE = (400, 300)
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2 if WINDOW_SIZE[0] // 2 <= MAX_BUTTON_SIZE[0] else MAX_BUTTON_SIZE[0]
@@ -71,16 +71,19 @@ class MenuView(arcade.View):
         self.ui_manager.draw()
 
     def play(self, _a):
+        sound_manager.play_ui_click()
         from src.lv_choose_view import ChooseView
         view = ChooseView()
         self.window.show_view(view)
 
     def settings(self, _a):
+        sound_manager.play_ui_click()
         from src.settings_view import SettingsView
         view = SettingsView()
         self.window.show_view(view)
 
     def exiting(self, _a):
+        sound_manager.play_ui_click()
         arcade.exit()
 
 

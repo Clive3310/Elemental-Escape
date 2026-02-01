@@ -11,5 +11,6 @@
         "INTER": 65364,
         "RIGHT": 65363
     },
-    "fullscreen": false
+    "fullscreen": false,
+    "sound_effects": true
 }

@@ -1,7 +1,3 @@
-import json
-import pathlib
-
-import arcade
 from pyglet.graphics import Batch
 
 from src.data_save_load import *
@@ -9,11 +5,13 @@ from src.entities.button import Button
 from src.entities.door import Door
 from src.entities.exit import Exit
 from src.entities.player import Player
+from src.sound_manager import sound_manager
 
 
 class LevelView(arcade.View):
     def __init__(self, ind: int = 1):
         super().__init__()
+        self.active_buttons = None
         self.ind = ind
         if not self.window.fullscreen:
             self.window.size = WINDOW_SIZE
@@ -129,6 +127,7 @@ class LevelView(arcade.View):
         self.time_batch = Batch()
 
         self.deaths = 0
+        self.active_buttons = set()  # Для отслеживания нажатых кнопок
 
         # Выходы
         self.exits = arcade.SpriteList()
@@ -163,6 +162,8 @@ class LevelView(arcade.View):
 
         deadge = self.death_check()
         if deadge:
+            self.deaths += 1
+            sound_manager.play_death()
             self.restart()
 
         self.time += delta_time
@@ -225,7 +226,10 @@ class LevelView(arcade.View):
             self.ending()
 
     def button_func(self, delta_time: float):
+        current_buttons = set()
+
         for but in self.player_fire.collides_with_list(self.buttons):
+            current_buttons.add(id(but))
             door_id = but.aid
             try:
                 for door in self.doors_ids[door_id]:
@@ -234,12 +238,19 @@ class LevelView(arcade.View):
                 print(f"Error: door {door_id} wasn't found")
 
         for but in self.player_water.collides_with_list(self.buttons):
+            current_buttons.add(id(but))
             door_id = but.aid
             try:
                 for door in self.doors_ids[door_id]:
                     door.use(delta_time)
             except KeyError:
                 print(f"Error: door {door_id} wasn't found")
+
+        # Звук при нажатии новой кнопки
+        new_buttons = current_buttons - self.active_buttons
+        if new_buttons:
+            sound_manager.play_button_press()
+        self.active_buttons = current_buttons
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         if symbol == self.rule_set["Fire"]["LEFT"]:
@@ -258,8 +269,10 @@ class LevelView(arcade.View):
 
         if symbol == self.rule_set["Fire"]["UP"] and self.player_fire.on_ground:
             self.player_fire.change_y = PLAYER_JUMP_POWER
+            sound_manager.play_jump()
         if symbol == self.rule_set["Water"]["UP"] and self.player_water.on_ground:
             self.player_water.change_y = PLAYER_JUMP_POWER
+            sound_manager.play_jump()
 
         if symbol == arcade.key.ESCAPE:
             from src.lv_choose_view import ChooseView

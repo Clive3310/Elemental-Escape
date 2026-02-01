@@ -4,6 +4,7 @@ import pathlib
 import arcade.gui
 
 from src.constants import *
+from src.sound_manager import sound_manager
 
 MAX_BUTTON_SIZE = (400, 300)
 BUTTON_WIDTH = WINDOW_SIZE[0] // 2 if WINDOW_SIZE[0] // 2 <= MAX_BUTTON_SIZE[0] else MAX_BUTTON_SIZE[0]
@@ -32,6 +33,7 @@ class SettingsView(arcade.View):
         super().__init__()
         self.hint_text = None
         self.btn_fullscreen = None
+        self.btn_sound = None
         self.background_color = WINDOW_MENU_COLOR
         self.UIman = arcade.gui.UIManager()
         self.title_text = None
@@ -75,7 +77,7 @@ class SettingsView(arcade.View):
         self.title_text = arcade.Text(
             "Settings",
             self.window.width / 2,
-            self.window.height - 100,
+            self.window.height - 50,
             anchor_x="center",
             **TITLE_STYLE
         )
@@ -107,6 +109,16 @@ class SettingsView(arcade.View):
         )
         self.btn_fullscreen.on_click = self.on_click_fullscreen
         main_vbox.add(self.btn_fullscreen)
+
+        sound_text = "Sound: ON" if sound_manager.sound_enabled else "Sound: OFF"
+        self.btn_sound = arcade.gui.UIFlatButton(
+            text=sound_text,
+            width=BUTTON_WIDTH,
+            height=BUTTON_HEIGHT,
+            style=BUTTON_STYLE
+        )
+        self.btn_sound.on_click = self.on_click_sound
+        main_vbox.add(self.btn_sound)
 
         fire_label = arcade.gui.UILabel(
             text="Fire Controls",
@@ -235,6 +247,7 @@ class SettingsView(arcade.View):
 
     def on_click_reset(self, event):
         """Сбрасывает управление"""
+        sound_manager.play_ui_click()
         self.settings["Fire"] = {"UP": 119, "LEFT": 97, "INTER": 115, "RIGHT": 100}
         self.settings["Water"] = {"UP": 65362, "LEFT": 65361, "INTER": 65364, "RIGHT": 65363}
         self.save_settings()
@@ -242,6 +255,7 @@ class SettingsView(arcade.View):
             self.update_button_text(player, action)
 
     def on_click_fullscreen(self, event):
+        sound_manager.play_ui_click()
         self.window.set_fullscreen(not self.window.fullscreen)
         self.settings["fullscreen"] = self.window.fullscreen
 
@@ -252,14 +266,22 @@ class SettingsView(arcade.View):
             self.window.set_size(int(WINDOW_SIZE[0]), int(WINDOW_SIZE[1]))
 
         self.title_text.x = self.window.width / 2
-        self.title_text.y = self.window.height - 100
+        self.title_text.y = self.window.height - 50
 
         self.hint_text.x = self.window.width / 2
         self.hint_text.y = self.window.height / 2
         self.save_settings()
 
+    def on_click_sound(self, event):
+        """Переключает звуковые эффекты"""
+        enabled = sound_manager.toggle_sound()
+        self.btn_sound.text = "Sound: ON" if enabled else "Sound: OFF"
+        if enabled:
+            sound_manager.play_ui_click()
+
     def on_click_back(self, event):
         from src.menu_view import MenuView
+        sound_manager.play_ui_click()
         view = MenuView()
         self.window.show_view(view)
 

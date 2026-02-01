@@ -1,7 +1,8 @@
+import pathlib
+
 import arcade.hitbox
 
 from src.constants import *
-import pathlib
 
 
 class Player(arcade.Sprite):

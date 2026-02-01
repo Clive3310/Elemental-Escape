@@ -2,6 +2,7 @@ import arcade.color
 from pyglet.graphics import Batch
 
 from src.data_save_load import *
+from src.sound_manager import sound_manager
 
 RECT_WIDTH = WINDOW_SIZE[0] // 1.4
 RECT_HEIGHT = WINDOW_SIZE[1] // 2
@@ -112,6 +113,7 @@ class EndingView(arcade.View):
 
     def go_back(self, _a):
         from src.lv_choose_view import ChooseView
+        sound_manager.play_ui_click()
         view = ChooseView()
         self.window.show_view(view)
 

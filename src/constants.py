@@ -1,4 +1,3 @@
-import arcade
 import arcade.gui
 
 DEV = False

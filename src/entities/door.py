@@ -41,6 +41,7 @@ class Door(arcade.Sprite):
                 if self.bottom > self.least_down:
                     self.center_y -= DOOR_SPEED * delta_time
         self.activated = False
+
     def use(self, delta_time: float = 1 / 60):
         self.activated = True
         if self.rev:
